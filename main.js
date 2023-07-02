@@ -1,3 +1,5 @@
+console.log("trigger main.js");
+
 chrome.tabs.onUpdated.addListener((tabId, tab) => {
     if (tab.url && tab.url.includes("youtube.com/watch")) {
       const queryParameters = tab.url.split("?")[1];
@@ -10,27 +12,25 @@ chrome.tabs.onUpdated.addListener((tabId, tab) => {
     }
   });
 
-// searchUrbanDict = function(word){
-//   var query = word.selectionText;
-//   chrome.tabs.create({url: "http://www.urbandictionary.com/define.php?term=" + query});
-// };
-
-//   chrome.contextMenus.create({
-//   title: "Search in UrbanDictionary",
-//   contexts:["selection"],  // ContextType
-//   onclick: searchUrbanDict // A callback function
-// });
-
-searchTerapeak = function(word){
+searchDictionary = function(word){
   var query = word.selectionText;
-  chrome.tabs.create({url: "https://www.ebay.com/sh/research?dayRange=365&sorting=-avgsalesprice&tabName=SOLD&keywords="
-+ query});  };
+  console.log('query: ', query);
+  chrome.tabs.create({url: "http://www.urbandictionary.com/define.php?term=" + query})
+};
 
 chrome.contextMenus.removeAll(function() {
   chrome.contextMenus.create({
    id: "1",
-   title: "Terapeak this!",
+   title: "Search in UrbanDictionary",
    contexts:["selection"],  // ContextType
-  }); })
+  }); 
+  chrome.contextMenus.create({
+   id: "2",
+   type: "checkbox",
+   checked: true,
+   title: "test",
+   contexts:["browser_action"],  // ContextType
+  }); 
+})
 
-chrome.contextMenus.onClicked.addListener(searchTerapeak);
+chrome.contextMenus.onClicked.addListener(searchDictionary);
