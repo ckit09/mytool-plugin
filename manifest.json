@@ -1,7 +1,7 @@
 {
     "name": "My Tool",
     "version": "1.0",
-    "description": "Saving timestamps in YT videos",
+    "description": "my customed tool",
     "permissions": ["storage", "tabs", "contextMenus"],
     "background": {
       "service_worker": "main.js"

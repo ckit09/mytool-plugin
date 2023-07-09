@@ -12,31 +12,23 @@ console.log("trigger main.js");
 //   }
 // });
 
-searchDictionary = function (word) {
-  var query = word;
-  console.log("query: ", query);
-  chrome.tabs.create({
-    url: "http://www.urbandictionary.com/define.php?term=" + query,
-  });
-};
-
 chrome.contextMenus.onClicked.addListener(genericOnClick);
 
 // A generic onclick callback function.l
 function genericOnClick(info) {
-  console.log('info', info);
+  console.log("info", info);
   switch (info.menuItemId) {
+    case "go_dictionary":
+      chrome.tabs.create({url: "http://www.urbandictionary.com/"});
+      break;
     case "dictionary":
-      // Radio item function
       console.log("dictionary item clicked, selected text: " + info.selectionText);
-      searchDictionary(info.selectionText)
+      searchDictionary(info.selectionText);
       break;
     case "checkbox":
-      // Checkbox item function
       console.log("Checkbox item clicked. Status:", info.checked);
       break;
     default:
-      // Standard context menu item function
       console.log("Standard context menu item clicked.");
   }
 }
@@ -51,6 +43,10 @@ chrome.runtime.onInstalled.addListener(function () {
     });
   });
 
+  chrome.contextMenus.create({
+    title: "Go to Urban Dictionary",
+    id: "go_dictionary",
+  });
   // Create a parent item and two children.
   let parent = chrome.contextMenus.create({
     title: "Test parent item",
@@ -81,3 +77,9 @@ chrome.runtime.onInstalled.addListener(function () {
     id: "checkbox",
   });
 });
+
+searchDictionary = function (word) {
+  var query = word;
+  console.log("query: ", query);
+  chrome.tabs.create({url: "http://www.urbandictionary.com/define.php?term=" + query});
+};
