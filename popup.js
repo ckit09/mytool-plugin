@@ -31,9 +31,18 @@ function sendRequest () {
   fetch(apiUrl, {})
   .then(response => response.text())
   .then(data => {
+    const result = document.querySelector("#result");
+    if (result) {
+      alert("api response already retrieved")
+      return
+    };
+
+    var div = document.createElement('div');
+    div.id = "result"
+    div.innerHTML = data;
+    document.body.appendChild(div)
     console.log(data);
-    alert(data)
-    // Process the API response here
+    // alert(data)
   })
   .catch(error => {
     console.log('Error:', error);
