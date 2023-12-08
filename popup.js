@@ -32,6 +32,7 @@ function sendRequest () {
   .then(response => response.text())
   .then(data => {
     console.log(data);
+    alert(data)
     // Process the API response here
   })
   .catch(error => {
