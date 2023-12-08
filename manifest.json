@@ -1,36 +1,52 @@
 {
-    "name": "My Tool",
-    "version": "1.0",
-    "description": "my customed tool",
-    "permissions": ["storage", "tabs", "contextMenus"],
-    "background": {
-      "service_worker": "main.js"
+  "name": "My Tool",
+  "manifest_version": 3,
+  "version": "1.0",
+  "description": "my customed tool",
+  "permissions": [
+    "storage",
+    "tabs",
+    "contextMenus",
+    "https://example.com/*",
+    "http://example.com/*"
+  ],
+  "background": {
+    "service_worker": "main.js"
+  },
+  "icons": {
+    "48": "assets/ext-icon.png",
+    "128": "assets/ext-icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.youtube.com/*"
+      ],
+      "js": [
+        "contentScript.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/bookmark.png",
+        "assets/play.png",
+        "assets/delete.png",
+        "assets/save.png"
+      ],
+      "matches": [
+        "https://*.youtube.com/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "16": "assets/ext-icon.png",
+      "24": "assets/ext-icon.png",
+      "32": "assets/ext-icon.png"
     },
-    "content_scripts": [
-      {
-        "matches": ["https://*.youtube.com/*"],
-        "js": ["contentScript.js"]
-      }
-    ],
-    "web_accessible_resources": [
-      {
-        "resources": [
-          "assets/bookmark.png",
-          "assets/play.png",
-          "assets/delete.png",
-          "assets/save.png"
-        ],
-        "matches": ["https://*.youtube.com/*"]
-      }
-    ],
-    "action": {
-      "default_icon": {
-        "16": "assets/ext-icon.png",
-        "24": "assets/ext-icon.png",
-        "32": "assets/ext-icon.png"
-      },
-      "default_title": "My YT Bookmarks",
-      "default_popup": "popup.html"
-    },
-    "manifest_version": 3
+    "default_title": "My YT Bookmarks",
+    "default_popup": "popup.html"
+  }
 }

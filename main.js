@@ -18,6 +18,9 @@ chrome.contextMenus.onClicked.addListener(genericOnClick);
 function genericOnClick(info) {
   console.log("info", info);
   switch (info.menuItemId) {
+    case "api":
+      sendRequest();
+      break;
     case "go_dictionary":
       chrome.tabs.create({url: "http://www.urbandictionary.com/"});
       break;
@@ -44,6 +47,10 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 
   chrome.contextMenus.create({
+    title: "api",
+    id: "api",
+  });
+  chrome.contextMenus.create({
     title: "Go to Urban Dictionary",
     id: "go_dictionary",
   });
@@ -63,14 +70,6 @@ chrome.runtime.onInstalled.addListener(function () {
     id: "child2",
   });
 
-  // // Create a radio item.
-  // chrome.contextMenus.create({
-  //   title: "radio",
-  //   type: "radio",
-  //   id: "radio",
-  // });
-
-  // Create a checkbox item.
   chrome.contextMenus.create({
     title: "checkbox_button",
     type: "checkbox",
@@ -83,3 +82,18 @@ searchDictionary = function (word) {
   console.log("query: ", query);
   chrome.tabs.create({url: "http://www.urbandictionary.com/define.php?term=" + query});
 };
+
+function sendRequest () {
+  // const apiUrl = 'https://cors-anywhere.herokuapp.com/https://example.com/';
+  const apiUrl = 'https://example.com';
+  
+  fetch(apiUrl, {})
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    // Process the API response here
+  })
+  .catch(error => {
+    console.log('Error:', error);
+  });
+}
