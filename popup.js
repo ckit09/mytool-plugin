@@ -10,9 +10,11 @@ const onDelete = e => {};
 const setBookmarkAttributes =  () => {};
 
 document.addEventListener("DOMContentLoaded", () => {});
-document.querySelector("#test").addEventListener("click", () => {
-  // openNewTab()
+document.querySelector("#testAPI").addEventListener("click", () => {
   sendRequest()
+});
+document.querySelector("#openNewTab").addEventListener("click", () => {
+  openNewTab()
 });
 
 function openNewTab () {
