@@ -1,50 +1,18 @@
-// adding a new bookmark row to the popup
-const addNewBookmark = () => {};
+function getWeather() {
+    // Hardcoded latitude and longitude for San Francisco, CA
+    const lat = 37.7749;
+    const lon = -122.4194;
 
-const viewBookmarks = () => {};
-
-const onPlay = e => {};
-
-const onDelete = e => {};
-
-const setBookmarkAttributes =  () => {};
-
-document.addEventListener("DOMContentLoaded", () => {});
-document.querySelector("#testAPI").addEventListener("click", () => {
-  sendRequest()
-});
-document.querySelector("#openNewTab").addEventListener("click", () => {
-  openNewTab()
-});
-
-function openNewTab () {
-  const script = document.createElement('script');
-  script.src = 'https://example.com';
-  document.body.appendChild(script);
-  window.open("https://example.com","_blank")
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+        .then(response => response.json())
+        .then(data => {
+            const temp = data.current_weather.temperature;
+            const code = data.current_weather.weathercode; // Note: You may want to map weather codes to descriptions
+            const weatherDiv = document.querySelector('#current-weather')
+            weatherDiv.innerHTML = `Temperature: ${temp}°C<br>Condition Code: ${code}`;
+        })
+        .catch(error => console.error('Error fetching weather data:', error));
 }
 
-function sendRequest () {
-  const apiUrl = 'https://cors-anywhere.herokuapp.com/https://example.com/';
-  // const apiUrl = 'https://example.com';
-  
-  fetch(apiUrl, {})
-  .then(response => response.text())
-  .then(data => {
-    const result = document.querySelector("#result");
-    if (result) {
-      alert("api response already retrieved")
-      return
-    };
-
-    var div = document.createElement('div');
-    div.id = "result"
-    div.innerHTML = data;
-    document.body.appendChild(div)
-    console.log(data);
-    // alert(data)
-  })
-  .catch(error => {
-    console.log('Error:', error);
-  });
-}
+// Call the function directly without geolocation
+getWeather();

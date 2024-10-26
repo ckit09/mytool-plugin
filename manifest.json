@@ -1,52 +1,20 @@
 {
-  "name": "My Tool",
   "manifest_version": 3,
+  "name": "Weather Info",
   "version": "1.0",
-  "description": "my customed tool",
-  "permissions": [
-    "storage",
-    "tabs",
-    "contextMenus",
-    "https://example.com/*",
-    "http://example.com/*"
-  ],
+  "description": "Get real-time weather information.",
+  "permissions": ["geolocation"],
   "background": {
-    "service_worker": "main.js"
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+    }
   },
   "icons": {
-    "48": "assets/ext-icon.png",
-    "128": "assets/ext-icon.png"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://*.youtube.com/*"
-      ],
-      "js": [
-        "contentScript.js"
-      ]
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "assets/bookmark.png",
-        "assets/play.png",
-        "assets/delete.png",
-        "assets/save.png"
-      ],
-      "matches": [
-        "https://*.youtube.com/*"
-      ]
-    }
-  ],
-  "action": {
-    "default_icon": {
-      "16": "assets/ext-icon.png",
-      "24": "assets/ext-icon.png",
-      "32": "assets/ext-icon.png"
-    },
-    "default_title": "My YT Bookmarks",
-    "default_popup": "popup.html"
+    // "16": "icon16.png",
+    // "48": "icon48.png",
+    // "128": "icon128.png"
   }
 }
