@@ -1,7 +1,7 @@
 function getWeather() {
-    // Hardcoded latitude and longitude for San Francisco, CA
-    const lat = 37.7749;
-    const lon = -122.4194;
+    // Hardcoded latitude and longitude for HK
+    const lat = 22.3193;
+    const lon = 114.1694;
 
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
         .then(response => response.json())
