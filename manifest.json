@@ -1,52 +1,41 @@
 {
-  "name": "My Tool",
   "manifest_version": 3,
-  "version": "1.0",
-  "description": "my customed tool",
+  "name": "Open Tab Next",
+  "version": "1.2",
+  "description": "Open a new tab right next to the current tab with a shortcut or context menu.",
   "permissions": [
-    "storage",
     "tabs",
     "contextMenus",
-    "https://example.com/*",
-    "http://example.com/*"
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "background": {
-    "service_worker": "main.js"
-  },
-  "icons": {
-    "48": "assets/ext-icon.png",
-    "128": "assets/ext-icon.png"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://*.youtube.com/*"
-      ],
-      "js": [
-        "contentScript.js"
-      ]
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start"
     }
   ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "assets/bookmark.png",
-        "assets/play.png",
-        "assets/delete.png",
-        "assets/save.png"
-      ],
-      "matches": [
-        "https://*.youtube.com/*"
-      ]
+  "icons": {
+    "48": "./assets/edit.png",
+    "128": "./assets/edit.png"
+  },
+  "commands": {
+    "open-tab-next": {
+      "suggested_key": {
+        "default": "Ctrl+T",
+        "mac": "Command+Shift+N"
+      },
+      "description": "Open a new tab next to the current tab"
     }
-  ],
+  },
   "action": {
-    "default_icon": {
-      "16": "assets/ext-icon.png",
-      "24": "assets/ext-icon.png",
-      "32": "assets/ext-icon.png"
-    },
-    "default_title": "My YT Bookmarks",
-    "default_popup": "popup.html"
+    "default_title": "Open New Tab Next"
   }
 }
