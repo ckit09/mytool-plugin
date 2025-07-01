@@ -1,18 +1,14 @@
+import './suspendTab.js';
 console.log("trigger main.js");
 
-// chrome.tabs.onUpdated.addListener((tabId, tab) => {
-//   if (tab.url && tab.url.includes("youtube.com/watch")) {
-//     const queryParameters = tab.url.split("?")[1];
-//     const urlParameters = new URLSearchParams(queryParameters);
-
-//     chrome.tabs.sendMessage(tabId, {
-//       type: "NEW",
-//       videoId: urlParameters.get("v"),
-//     });
-//   }
-// });
-
 chrome.contextMenus.onClicked.addListener(genericOnClick);
+
+
+const searchDictionary = function (word) {
+  var query = word;
+  console.log("query: ", query);
+  chrome.tabs.create({url: "http://www.urbandictionary.com/define.php?term=" + query});
+};
 
 // A generic onclick callback function.l
 function genericOnClick(info) {
@@ -69,9 +65,3 @@ chrome.runtime.onInstalled.addListener(function () {
     id: "checkbox",
   });
 });
-
-searchDictionary = function (word) {
-  var query = word;
-  console.log("query: ", query);
-  chrome.tabs.create({url: "http://www.urbandictionary.com/define.php?term=" + query});
-};
