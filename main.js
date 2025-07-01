@@ -1,8 +1,21 @@
-import './suspendTab.js';
+import { suspendAllTabs, exemptTab, getExemptionList, removeExemption } from './suspendTab.js';
 console.log("trigger main.js");
 
 chrome.contextMenus.onClicked.addListener(genericOnClick);
 
+// Listen for messages from the popup
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "suspendAllTabs") {
+    suspendAllTabs();
+  } else if (request.action === "exemptCurrentTab") {
+    exemptTab(request.tabId);
+  } else if (request.action === "getExemptionList") {
+    sendResponse({ exemptedTabs: getExemptionList() });
+    return true; // Indicates that sendResponse will be called asynchronously
+  } else if (request.action === "removeExemption") {
+    removeExemption(request.tabId);
+  }
+});
 
 const searchDictionary = function (word) {
   var query = word;

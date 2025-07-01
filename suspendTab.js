@@ -2,7 +2,7 @@
 //
 // Major Functionalities:
 // 1. Automatic Tab Suspension: Automatically discards (suspends) tabs that have been idle
-//    for a specified duration (currently 1 minute). This applies to all URLs.
+//    for a specified duration (currently 5 minute). This applies to all URLs.
 // 2. Tab Activity Tracking: Monitors tab activation and updates to determine idle time
 //    for each open tab.
 // 3. Manual Tab Suspension: Provides a context menu item (triggered by right-clicking the
@@ -22,11 +22,12 @@
 // - A clear, consolidated summary of tab statuses will be available in the browser's
 //   developer console at regular intervals.
 //
-const IDLE_TIME_THRESHOLD = 60 * 1000; // 1 minute in milliseconds
+const IDLE_TIME_THRESHOLD = 5 * 60 * 1000; // 5 minute in milliseconds
 const CHECK_INTERVAL = 5 * 1000; // Check every 5 seconds
 const LOG_INTERVAL = 60 * 1000; // Log every 1 minute
 
 let tabActivity = {}; // Stores {tabId: lastActiveTimestamp}
+let exemptedTabIds = []; // Array to store IDs of tabs to be exempted from suspension
 
 // Update activity on tab activation
 chrome.tabs.onActivated.addListener((activeInfo) => {
@@ -35,21 +36,28 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 
 // Update activity on tab update (e.g., page load, URL change)
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete') {
-    tabActivity[tabId] = Date.now();
+  tabActivity[tabId] = Date.now();
+});
+
+// Clean up tabActivity for closed tabs and remove from exemption list
+chrome.tabs.onRemoved.addListener((tabId) => {
+  delete tabActivity[tabId];
+  const index = exemptedTabIds.indexOf(tabId);
+  if (index > -1) {
+    exemptedTabIds.splice(index, 1);
   }
 });
 
-// Periodically check for idle Google tabs to suspend
+// Periodically check for idle tabs to suspend
 setInterval(() => {
   chrome.tabs.query({}, (tabs) => {
     tabs.forEach((tab) => {
       const lastActive = tabActivity[tab.id] || 0;
       const idleTime = Date.now() - lastActive;
 
-      if (!tab.discarded && idleTime >= IDLE_TIME_THRESHOLD) {
+      if (!tab.discarded && idleTime >= IDLE_TIME_THRESHOLD && !exemptedTabIds.includes(tab.id)) {
         chrome.tabs.discard(tab.id);
-        console.log(`Discarded tab ${tab.id} - ${tab.title} due to idling for ${Math.round(idleTime / 1000)} seconds.`);
+        console.log(`Discarded tab ${tab.id} - "${tab.title}" due to idling for ${Math.round(idleTime / 1000)} seconds.`);
       }
     });
   });
@@ -67,11 +75,12 @@ setInterval(() => {
 
     tabs.forEach((tab) => {
       const lastActive = tabActivity[tab.id] || 0;
-      const idleTime = Date.now() - lastActive;
+      const idleTime = lastActive == 0 ? 0 : Date.now() - lastActive;
       const idleTimeSeconds = Math.round(idleTime / 1000);
+      const isExempted = exemptedTabIds.includes(tab.id) ? " (EXEMPTED)" : "";
       logMessage +=
         `ID: ${tab.id} | URL: "${tab.url}" | ` +
-        `Discarded: ${tab.discarded} | Idle For: ${idleTimeSeconds} seconds\n`;
+        `Discarded: ${tab.discarded} | Idle For: ${idleTimeSeconds} seconds | isExempted: ${isExempted}\n`;
     });
     logMessage += `----------------------------------------------------`;
 
@@ -79,32 +88,32 @@ setInterval(() => {
   });
 }, LOG_INTERVAL);
 
-// Clean up tabActivity for closed tabs
-chrome.tabs.onRemoved.addListener((tabId) => {
-  delete tabActivity[tabId];
-});
-
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: "suspend_all_tabs",
-    title: "Suspend All Tabs",
-    contexts: ["action"],
-  });
-});
-
-chrome.contextMenus.onClicked.addListener((info) => {
-  if (info.menuItemId === "suspend_all_tabs") {
-    suspendAllTabs();
-  }
-});
-
-function suspendAllTabs() {
+export function suspendAllTabs() {
   chrome.tabs.query({}, (tabs) => {
     tabs.forEach((tab) => {
-      if (!tab.discarded) {
+      if (!tab.discarded && !exemptedTabIds.includes(tab.id)) { 
         chrome.tabs.discard(tab.id);
-        console.log(`Tab ${tab.id} - ${tab.title} discarded.`);
+        console.log(`Suspended tab ${tab.id} - "${tab.title}".`);
       }
     });
   });
+}
+
+export function exemptTab(tabId) {
+  if (!exemptedTabIds.includes(tabId)) {
+    exemptedTabIds.push(tabId);
+    console.log(`Tab ${tabId} added to exemption list.`);
+  }
+}
+
+export function getExemptionList() {
+  return exemptedTabIds;
+}
+
+export function removeExemption(tabId) {
+  const index = exemptedTabIds.indexOf(tabId);
+  if (index > -1) {
+    exemptedTabIds.splice(index, 1);
+    console.log(`Tab ${tabId} removed from exemption list.`);
+  }
 } 
