@@ -1,3 +1,27 @@
+// This script manages tab suspension and provides status logging for a Chrome Extension.
+//
+// Major Functionalities:
+// 1. Automatic Tab Suspension: Automatically discards (suspends) tabs that have been idle
+//    for a specified duration (currently 1 minute). This applies to all URLs.
+// 2. Tab Activity Tracking: Monitors tab activation and updates to determine idle time
+//    for each open tab.
+// 3. Manual Tab Suspension: Provides a context menu item (triggered by right-clicking the
+//    extension icon) that allows the user to manually suspend all active tabs.
+//    (Note: This functionality is being migrated to a popup button for left-click action.)
+// 4. Comprehensive Status Logging: Periodically (every 1 minute) logs a detailed summary
+//    of all current tabs to the console. This includes:
+//    - Total number of tabs and the count of currently suspended tabs.
+//    - For each tab: ID, URL, discarded status, and calculated idle time.
+// 5. Tab Activity Cleanup: Removes tracking data for tabs that have been closed to prevent
+//    memory leaks.
+//
+// Expected Results:
+// - Tabs that meet the idle criteria will be automatically suspended by the browser,
+//   reducing memory usage.
+// - Users can manually suspend all tabs via the extension's right-click context menu.
+// - A clear, consolidated summary of tab statuses will be available in the browser's
+//   developer console at regular intervals.
+//
 const IDLE_TIME_THRESHOLD = 60 * 1000; // 1 minute in milliseconds
 const CHECK_INTERVAL = 5 * 1000; // Check every 5 seconds
 const LOG_INTERVAL = 60 * 1000; // Log every 1 minute
