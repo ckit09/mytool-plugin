@@ -49,19 +49,19 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 });
 
 // Periodically check for idle tabs to suspend
-setInterval(() => {
-  chrome.tabs.query({}, (tabs) => {
-    tabs.forEach((tab) => {
-      const lastActive = tabActivity[tab.id] || 0;
-      const idleTime = Date.now() - lastActive;
+// setInterval(() => {
+//   chrome.tabs.query({}, (tabs) => {
+//     tabs.forEach((tab) => {
+//       const lastActive = tabActivity[tab.id] || 0;
+//       const idleTime = Date.now() - lastActive;
 
-      if (!tab.discarded && idleTime >= IDLE_TIME_THRESHOLD && !exemptedTabIds.includes(tab.id)) {
-        chrome.tabs.discard(tab.id);
-        console.log(`Discarded tab ${tab.id} - "${tab.title}" due to idling for ${Math.round(idleTime / 1000)} seconds.`);
-      }
-    });
-  });
-}, CHECK_INTERVAL);
+//       if (!tab.discarded && idleTime >= IDLE_TIME_THRESHOLD && !exemptedTabIds.includes(tab.id)) {
+//         chrome.tabs.discard(tab.id);
+//         console.log(`Discarded tab ${tab.id} - "${tab.title}" due to idling for ${Math.round(idleTime / 1000)} seconds.`);
+//       }
+//     });
+//   });
+// }, CHECK_INTERVAL);
 
 // Periodically log status summary of all tabs
 setInterval(() => {
